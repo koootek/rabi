@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "rabi",
+    "rabi_core",
+    "rabi_derive",
+    "rabi_test",
+]
+resolver = "2"

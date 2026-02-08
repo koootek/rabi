@@ -1,0 +1,14 @@
+[package]
+name = "rabi"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+test = false
+
+[dependencies]
+rabi_core = { path = "../rabi_core" }
+rabi_derive = { path = "../rabi_derive", optional = true }
+
+[features]
+derive = ["rabi_derive"]
