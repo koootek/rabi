@@ -1,7 +1,4 @@
-use rabi::{
-    FromRaw, IntoRaw,
-    derive::{FromRaw, IntoRaw},
-};
+use rabi::derive::{FromRaw, IntoRaw};
 
 #[test]
 fn test_move() {
@@ -31,9 +28,7 @@ struct Vec3 {
 }
 
 fn server() {
-    let mut world = World {
-        players: vec![],
-    };
+    let mut world = World { players: vec![] };
     world.players.push(Player {
         name: "abc".to_string(),
         visible: true,
@@ -51,7 +46,7 @@ fn server() {
         messages: ["jkl", "mno"].iter().map(|s| s.to_string()).collect(),
     });
     println!("server pre: {world:#?}");
-    world = World::from_raw(client(world.into_raw()));
+    world = rabi::from_raw(client(rabi::into_raw(world)));
     println!("server post: {world:#?}");
     let player = &world.players[0];
     assert_eq!(player.name, "abcdef".to_string());
@@ -74,7 +69,7 @@ fn server() {
 }
 
 fn client(world: rabi::Raw<World>) -> rabi::Raw<World> {
-    let mut world = World::from_raw(world);
+    let mut world: World = rabi::from_raw(world);
     println!("client pre: {world:#?}");
     let player = &mut world.players[0];
     player.name.push_str("def");
@@ -88,5 +83,5 @@ fn client(world: rabi::Raw<World>) -> rabi::Raw<World> {
     }
     player.messages.push("ghi".to_string());
     println!("client post: {world:#?}");
-    world.into_raw()
+    rabi::into_raw(world)
 }
