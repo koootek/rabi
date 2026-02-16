@@ -17,6 +17,22 @@ pub trait RawRepr {
 
 pub type Raw<T> = InnerRaw<<T as RawRepr>::Repr>;
 
+pub fn from_raw<T>(raw: Raw<T>) -> T
+where
+    T: FromRaw<Input = <T as RawRepr>::Repr, Output = T> + RawRepr,
+    <T as RawRepr>::Repr: RawRepr<Repr = <T as RawRepr>::Repr>,
+{
+    T::from_raw(raw)
+}
+
+pub fn into_raw<T>(value: T) -> Raw<T>
+where
+    T: IntoRaw<Output = <T as RawRepr>::Repr> + RawRepr,
+    <T as RawRepr>::Repr: RawRepr<Repr = <T as RawRepr>::Repr>,
+{
+    T::into_raw(value)
+}
+
 #[repr(C)]
 pub union InnerRaw<T> {
     pub value: std::mem::ManuallyDrop<T>,
@@ -75,7 +91,8 @@ where
     type Output = Vec<<T as RawRepr>::Repr>;
 
     fn into_raw(self) -> Raw<Self::Output> {
-        let data: Vec<InnerRaw<<T as RawRepr>::Repr>> = self.into_iter().map(|v| v.into_raw()).collect();
+        let data: Vec<InnerRaw<<T as RawRepr>::Repr>> =
+            self.into_iter().map(|v| v.into_raw()).collect();
         let (ptr, len, capacity) = data.into_raw_parts();
         InnerRaw {
             vec: std::mem::ManuallyDrop::new(RawVec {
@@ -101,7 +118,13 @@ where
                 InnerRaw { vec } => vec,
             }
         };
-        let data = unsafe { Vec::from_raw_parts(vec.ptr as *mut InnerRaw<<T as RawRepr>::Repr>, vec.len, vec.capacity) };
+        let data = unsafe {
+            Vec::from_raw_parts(
+                vec.ptr as *mut InnerRaw<<T as RawRepr>::Repr>,
+                vec.len,
+                vec.capacity,
+            )
+        };
         data.into_iter().map(|v| T::from_raw(v)).collect()
     }
 }
