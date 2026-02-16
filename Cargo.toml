@@ -5,4 +5,4 @@ members = [
     "rabi_derive",
     "rabi_test",
 ]
-resolver = "2"
+resolver = "3"
