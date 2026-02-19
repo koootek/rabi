@@ -7,7 +7,7 @@ fn test_move() {
 
 #[derive(Debug, FromRaw, IntoRaw)]
 struct World {
-    players: Vec::<Player>,
+    players: Vec<Player>,
 }
 
 #[derive(Debug, FromRaw, IntoRaw)]
@@ -16,8 +16,8 @@ struct Player {
     visible: bool,
     health: f32,
     position: Vec3,
-    pets: Vec::<usize>,
-    messages: Vec::<String>,
+    pets: Vec<usize>,
+    messages: Vec<String>,
 }
 
 #[derive(Debug, FromRaw, IntoRaw)]
