@@ -34,8 +34,7 @@ pub fn derive_into_raw(input: TokenStream) -> TokenStream {
             #ident: self.#ident.into_raw()
         }
     });
-
-    let code = quote! {
+    TokenStream::from(quote! {
         #[repr(C)]
         pub struct #raw_name {
             #(#wrapped_fields,)*
@@ -62,8 +61,7 @@ pub fn derive_into_raw(input: TokenStream) -> TokenStream {
                 }
             }
         }
-    };
-    TokenStream::from(code)
+    })
 }
 
 #[proc_macro_derive(FromRaw)]
@@ -89,7 +87,7 @@ pub fn derive_from_raw(input: TokenStream) -> TokenStream {
             #ident: #ty::from_raw(raw.#ident)
         }
     });
-    let code = quote! {
+    TokenStream::from(quote! {
         impl rabi::FromRaw for #name {
             type Input = #raw_name;
             type Output = Self;
@@ -105,6 +103,5 @@ pub fn derive_from_raw(input: TokenStream) -> TokenStream {
                 }
             }
         }
-    };
-    TokenStream::from(code)
+    })
 }
